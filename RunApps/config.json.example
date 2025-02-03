@@ -1,0 +1,29 @@
+{
+    "apps": {
+        "firefox": {
+            "path": "firefox"
+        },
+        "discord": {
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Discord\\Update.exe",
+            "args": "--processStart Discord.exe"
+        },
+        "vscode": {
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+        },
+        "spotify": {
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Microsoft\\WindowsApps\\Spotify.exe"
+        },
+        "steam": {
+            "path": "D:\\Games\\Steam\\Steam.exe"
+        },
+        "youtube": {
+            "path": "firefox",
+            "args": "https://www.youtube.com/"
+        }
+    },
+    "groups": {
+        "gaming": ["discord", "steam", "spotify"],
+        "work": ["vscode", "firefox", "spotify"],
+        "relax": ["discord", "spotify","youtube"]
+    }
+}
