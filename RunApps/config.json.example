@@ -8,13 +8,18 @@
             "args": "--processStart Discord.exe"
         },
         "vscode": {
-            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            "ignoreStderr": true
         },
         "spotify": {
             "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Microsoft\\WindowsApps\\Spotify.exe"
         },
         "steam": {
             "path": "D:\\Games\\Steam\\Steam.exe"
+        },
+        "xbox": {
+            "path": "explorer.exe",
+            "args": "xbox:"
         },
         "youtube": {
             "path": "firefox",

@@ -4,7 +4,8 @@
 
   .DESCRIPTION
   This script can be used to run programs or groups of programs.
-  The programs can be specified in the file "config.json" in the same directory as this script.
+  It is essentially a wrapper for the Start-Process cmdlet.
+  The programs can be specified in the file config.json in the same directory as this script.
   To configure an app, choose a name, the path to its executable, and optional parameters for the program.
   After configuring, programs can be started by simply running this script and passing one or more
   of the configured program names as arguments to the script.
@@ -12,10 +13,21 @@
   app names. Group names and app names can be mixed in the invocation of the script.
   One app will not be started twice in a single call to the script. Thus, if you are using an app and a group
   that the app is referenced in, then the app is only started once.
-  For apps that are installed via the Microsoft Store source, Windows sometimes assigns a new command that points
-  to the executable of that app. An example is Firefox: After installing it via MS Store, it can be launched
-  using just "firefox" from PowerShell. This name can be used as a substitute of the actual path in the config.
-  Alternatively, you can use "Get-Command firefox" to get the path to the executable that the command points to.
+
+  Parameters for apps in config.json:
+  - "path" (string): the path to the executable of the application, or a pointer to an executable
+  - "args" (string): arguments that should be passed to the application
+  - "ignoreStderr" (bool): whether error output should be ignored, defaults to false
+
+  # Special cases
+
+    Depending on how a program is installed, there can be a new command registered in PowerShell that points to
+    the executable of that app. An example is Firefox: After installing it via MS Store, it can be launched using 
+    just "firefox" from PowerShell. This name can be used as a substitute of the actual path in the config.
+    Alternatively, you can use "Get-Command firefox" to get the path to the executable that the command points to.
+
+    UWP apps like the Xbox app register a URI scheme that can be used with explorer.exe.
+    Check out the example in config.json.example.
 
   .PARAMETER RequestedItems
   The app and group names which should be started.
@@ -103,11 +115,16 @@ if ($apps.Count -eq 0) {
 Write-Host "Running $($apps -join ', ')..."
 foreach ($app in $apps) {
     $appConfig = $appConfigs.$app
-    $appPath = [System.Environment]::ExpandEnvironmentVariables($appConfig.path)
 
-    if ($appConfig.Contains("args")) {
-        Start-Process -FilePath $appPath -ArgumentList $appConfig.args -RedirectStandardError "NUL"
-    } else {
-        Start-Process -FilePath $appPath -RedirectStandardError "NUL"
+    $params = @{
+        FilePath = [System.Environment]::ExpandEnvironmentVariables($appConfig.path)
     }
+    if ($appConfig.args) {
+        $params.ArgumentList = $appConfig.args
+    }
+    if ($appConfig.ignoreStderr) {
+        $params.RedirectStandardError = "NUL"
+    }
+
+    Start-Process @params
 }
