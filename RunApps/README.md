@@ -7,4 +7,5 @@ For more details, have a look into [the script's docstring](./RunApps.ps1#L5).
 ## running the script
 
 Set an alias to the script, and run the script while passing the app, or app group that you want to launch:  
+
 ![alt text](./docs/screenshot.png "Title")
