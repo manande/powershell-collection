@@ -6,7 +6,8 @@
   This script can be used to run programs or groups of programs.
   It is essentially a wrapper for the Start-Process cmdlet.
   The programs can be specified in the file config.json in the same directory as this script.
-  To configure an app, choose a name, the path to its executable, and optional parameters for the program.
+  To configure an app, choose a name, the path to its executable, and optional parameters and environment
+  variables for the program.
   After configuring, programs can be started by simply running this script and passing one or more
   of the configured program names as arguments to the script.
   Program names can be assigned to groups, which can be started using the group name as argument, just like the
@@ -17,15 +18,18 @@
   Parameters for apps in config.json:
   - "path" (string): the path to the executable of the application, or a pointer to an executable
   - "args" (string): arguments that should be passed to the application
+  - "env" (key/value map): environment variables that the program needs, these do not pollute the current
+                           environment namespace; example: some Electron apps need ELECTRON_NO_ATTACH_CONSOLE="true"
+                           so they don't attach to the current process and stop logging to the terminal session
   - "ignoreStderr" (bool): whether error output should be ignored, defaults to false
 
   # Special cases
 
     Depending on how a program is installed, there can be a new command registered in PowerShell that points to
-    the executable of that app. An example is Firefox: After installing it via MS Store, it can be launched using 
+    the executable of that app. Example: After installing Firefox via the Microsoft Store, it can be launched using 
     just "firefox" from PowerShell. This name can be used as a substitute of the actual path in the config.
     Alternatively, you can use "Get-Command firefox" to get the path to the executable that the command points to.
-
+    
     UWP apps like the Xbox app register a URI scheme that can be used with explorer.exe.
     Check out the example in config.json.example.
 
@@ -126,5 +130,16 @@ foreach ($app in $apps) {
         $params.RedirectStandardError = "NUL"
     }
 
-    Start-Process @params
+    if ($appConfig.env) {
+        pwsh -Command {
+            $envMap = $args[0]
+            $appParams = $args[1]
+            $envMap.GetEnumerator() | ForEach-Object {
+                Set-Item "env:$($_.Key)" $_.Value
+            }
+            Start-Process @appParams
+        } -Args $appConfig.env, $params
+    } else {
+        Start-Process @params
+    }
 }

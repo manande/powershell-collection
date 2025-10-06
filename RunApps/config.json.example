@@ -24,6 +24,20 @@
         "youtube": {
             "path": "firefox",
             "args": "https://www.youtube.com/"
+        },
+        "some_electron_app_that_attaches_to_the_current_process": {
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\some_electron_app\\app.exe",
+            "env": {
+                "ELECTRON_NO_ATTACH_CONSOLE": "true"
+            }
+        },
+        "some_app_that_needs_multiple_environment_variables": {
+            "path": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\some_electron_app\\app.exe",
+            "env": {
+                "KEY1": "VALUE1",
+                "KEY2": "VALUE2",
+                "KEY3": "VALUE3"
+            }
         }
     },
     "groups": {
